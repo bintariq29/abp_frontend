@@ -1,15 +1,25 @@
 import { ChangeDetectorRef, Component, Injector, ViewChild, OnInit } from '@angular/core';
 import { LazyLoadEvent } from '@node_modules/primeng/api';
 import { PagedListingComponentBase } from '@shared/paged-listing-component-base';
+import { Table, TableModule } from 'primeng/table';
+import { Paginator, PaginatorModule } from 'primeng/paginator';
+import { PrimeTemplate } from 'primeng/api';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { LocalizePipe } from '@shared/pipes/localize.pipe';
 
 import { ProductServiceProxy, ProductDto, ProductDtoPagedResultDto } from '@shared/service-proxies/service-proxies';
 
 @Component({
   selector: 'app-product',
   templateUrl: './products.component.html',
-  standalone: true
+  standalone: true,
+  imports: [CommonModule, FormsModule, TableModule, PrimeTemplate, PaginatorModule, LocalizePipe]
 })
-export class ProductComponent extends PagedListingComponentBase<ProductDto> {
+export class ProductComponent extends PagedListingComponentBase<ProductDto> implements OnInit {
+  @ViewChild('dataTable', { static: true }) dataTable: Table;
+  @ViewChild('paginator', { static: true }) paginator: Paginator;
+
   products: ProductDto[] = [];
 
   constructor(
@@ -20,25 +30,41 @@ export class ProductComponent extends PagedListingComponentBase<ProductDto> {
     super(injector, cd);
   }
 
-  onInit(): void {
+  ngOnInit(): void {
     this.list();
   }
 
+  editProduct(id: number): void {
+    // Navigate to edit page or open dialog
+    console.log('Edit product', id);
+  }
+
   protected list(event?: LazyLoadEvent): void {
+    if (this.primengTableHelper.shouldResetPaging(event)) {
+      this.paginator.changePage(0);
+
+      if (this.primengTableHelper.records && this.primengTableHelper.records.length > 0) {
+        return;
+      }
+    }
+
     this.primengTableHelper.showLoadingIndicator();
 
     this._productService
       .getAll(
-        this.primengTableHelper.getSorting(null), // assuming no table for now
-        this.primengTableHelper.getSkipCount(null, event),
-        this.primengTableHelper.getMaxResultCount(null, event)
+        this.primengTableHelper.getSorting(this.dataTable) || '',
+        this.primengTableHelper.getSkipCount(this.paginator, event) || 0,
+        Math.max(this.primengTableHelper.getMaxResultCount(this.paginator, event), this.primengTableHelper.defaultRecordsCountPerPage)
       )
       .subscribe((result: ProductDtoPagedResultDto) => {
-        this.products = result.items;
+        console.log('Products loaded:', result.items.length, result);
+        this.primengTableHelper.records = result.items;
         this.primengTableHelper.totalRecordsCount = result.totalCount;
         this.primengTableHelper.hideLoadingIndicator();
         this.cd.detectChanges();
-        alert('Products loaded: ' + this.products.length);
+      }, error => {
+        console.error('Error loading products:', error);
+        this.primengTableHelper.hideLoadingIndicator();
       });
   }
 
@@ -48,6 +74,4 @@ export class ProductComponent extends PagedListingComponentBase<ProductDto> {
       this.refresh();
     });
   }
-
-
 }
