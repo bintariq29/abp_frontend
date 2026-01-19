@@ -6,14 +6,16 @@ import { Paginator, PaginatorModule } from 'primeng/paginator';
 import { PrimeTemplate } from 'primeng/api';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 import { ProductServiceProxy, ProductDto, ProductDtoPagedResultDto } from '@shared/service-proxies/service-proxies';
+import { CreateProductDialogComponent } from './create-product/create-product-dialog.component';
 
 @Component({
   selector: 'app-product',
   templateUrl: './products.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, TableModule, PrimeTemplate, PaginatorModule,]
+  imports: [CommonModule, FormsModule, TableModule, PrimeTemplate, PaginatorModule]
 })
 export class ProductComponent extends PagedListingComponentBase<ProductDto> implements OnInit {
   @ViewChild('dataTable', { static: true }) dataTable: Table;
@@ -24,6 +26,7 @@ export class ProductComponent extends PagedListingComponentBase<ProductDto> impl
   constructor(
     injector: Injector,
     private _productService: ProductServiceProxy,
+    private _modalService: BsModalService,
     cd: ChangeDetectorRef
   ) {
     super(injector, cd);
@@ -36,6 +39,15 @@ export class ProductComponent extends PagedListingComponentBase<ProductDto> impl
   editProduct(id: number): void {
     // Navigate to edit page or open dialog
     console.log('Edit product', id);
+  }
+
+  createProduct(): void {
+    const modalRef = this._modalService.show(CreateProductDialogComponent, {
+      class: 'modal-lg'
+    });
+    modalRef.content.onSave.subscribe(() => {
+      this.refresh();
+    });
   }
 
   protected list(event?: LazyLoadEvent): void {

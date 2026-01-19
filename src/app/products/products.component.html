@@ -1,9 +1,9 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h3><i class="fas fa-box"></i> Products</h3>
-        <a routerLink="/products/create" class="btn btn-primary">
+        <button type="button" class="btn btn-primary" (click)="createProduct()">
             <i class="fas fa-plus"></i> Create Product
-        </a>
+        </button>
     </div>
 
     <div class="card-body table-responsive table-striped table-bordered">
