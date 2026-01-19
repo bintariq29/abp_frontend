@@ -8,4 +8,7 @@ import { ProductsRoutingModule } from './products-routing.module';
         ProductsRoutingModule
     ]
 })
-export class ProductsModule { }
+export class ProductsModule { 
+
+    
+}

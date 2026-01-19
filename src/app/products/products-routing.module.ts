@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ProductComponent } from './products.component';
+import { ProductsComponent } from './products.component';
 
 const routes: Routes = [
-  { path: '', component: ProductComponent } // standalone works here
+  { path: '', component: ProductsComponent } // standalone works here
 ];
 
 @NgModule({
