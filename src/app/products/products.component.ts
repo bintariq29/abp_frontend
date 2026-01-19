@@ -10,6 +10,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 import { ProductServiceProxy, ProductDto, ProductDtoPagedResultDto } from '@shared/service-proxies/service-proxies';
 import { CreateProductDialogComponent } from './create-product/create-product-dialog.component';
+import { EditProductDialogComponent } from './edit-product/edit-user-dialog.component';
 
 @Component({
   selector: 'app-product',
@@ -37,8 +38,15 @@ export class ProductComponent extends PagedListingComponentBase<ProductDto> impl
   }
 
   editProduct(id: number): void {
-    // Navigate to edit page or open dialog
-    console.log('Edit product', id);
+    const modalRef = this._modalService.show(EditProductDialogComponent, {
+      class: 'modal-lg',
+      initialState: {
+        id: id
+      }
+    });
+    modalRef.content.onSave.subscribe(() => {
+      this.refresh();
+    });
   }
 
   createProduct(): void {
