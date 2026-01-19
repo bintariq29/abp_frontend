@@ -6,7 +6,6 @@ import { Paginator, PaginatorModule } from 'primeng/paginator';
 import { PrimeTemplate } from 'primeng/api';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { LocalizePipe } from '@shared/pipes/localize.pipe';
 
 import { ProductServiceProxy, ProductDto, ProductDtoPagedResultDto } from '@shared/service-proxies/service-proxies';
 
@@ -14,7 +13,7 @@ import { ProductServiceProxy, ProductDto, ProductDtoPagedResultDto } from '@shar
   selector: 'app-product',
   templateUrl: './products.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, TableModule, PrimeTemplate, PaginatorModule, LocalizePipe]
+  imports: [CommonModule, FormsModule, TableModule, PrimeTemplate, PaginatorModule,]
 })
 export class ProductComponent extends PagedListingComponentBase<ProductDto> implements OnInit {
   @ViewChild('dataTable', { static: true }) dataTable: Table;
@@ -69,9 +68,13 @@ export class ProductComponent extends PagedListingComponentBase<ProductDto> impl
   }
 
   protected delete(entity: ProductDto): void {
-    // Implement delete logic
-    this._productService.delete(entity.id).subscribe(() => {
-      this.refresh();
+    abp.message.confirm(this.l('ProductDeleteWarningMessage', entity.name), undefined, (result: boolean) => {
+      if (result) {
+        this._productService.delete(entity.id).subscribe(() => {
+          abp.notify.success(this.l('SuccessfullyDeleted'));
+          this.refresh();
+        });
+      }
     });
   }
 }
