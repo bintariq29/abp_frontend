@@ -21,6 +21,12 @@ import { AppComponent } from './app.component';
                         canActivate: [AppRouteGuard], // optional: only if you want auth guard
                     },
                     {
+                        path: 'heros',
+                        loadChildren: () => import('./heros/heros.module').then((m) => m.HerosModule),
+                        canActivate: [AppRouteGuard],
+
+                    },
+                    {
                         path: 'about',
                         loadChildren: () => import('./about/about.module').then((m) => m.AboutModule),
                         canActivate: [AppRouteGuard],
