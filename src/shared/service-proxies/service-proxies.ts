@@ -206,6 +206,289 @@ export class ConfigurationServiceProxy {
 }
 
 @Injectable()
+export class HeroAppServicServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    createHero(body: HeroDto | undefined): Observable<GetHeroDto> {
+        let url_ = this.baseUrl + "/api/services/app/HeroAppServic/CreateHero";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateHero(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateHero(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GetHeroDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GetHeroDto>;
+        }));
+    }
+
+    protected processCreateHero(response: HttpResponseBase): Observable<GetHeroDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetHeroDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @param email (optional) 
+     * @return OK
+     */
+    deleteHeroByEmailId(email: string | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/HeroAppServic/DeleteHeroByEmailId?";
+        if (email === null)
+            throw new Error("The parameter 'email' cannot be null.");
+        else if (email !== undefined)
+            url_ += "email=" + encodeURIComponent("" + email) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteHeroByEmailId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteHeroByEmailId(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDeleteHeroByEmailId(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getAllHeros(): Observable<GetHeroDtoListResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/HeroAppServic/GetAllHeros";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllHeros(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllHeros(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GetHeroDtoListResultDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GetHeroDtoListResultDto>;
+        }));
+    }
+
+    protected processGetAllHeros(response: HttpResponseBase): Observable<GetHeroDtoListResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetHeroDtoListResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @param email (optional) 
+     * @return OK
+     */
+    getHeroByEmailId(email: string | undefined): Observable<GetHeroDto> {
+        let url_ = this.baseUrl + "/api/services/app/HeroAppServic/GetHeroByEmailId?";
+        if (email === null)
+            throw new Error("The parameter 'email' cannot be null.");
+        else if (email !== undefined)
+            url_ += "email=" + encodeURIComponent("" + email) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetHeroByEmailId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetHeroByEmailId(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GetHeroDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GetHeroDto>;
+        }));
+    }
+
+    protected processGetHeroByEmailId(response: HttpResponseBase): Observable<GetHeroDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetHeroDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    updateHero(body: HeroDto | undefined): Observable<GetHeroDto> {
+        let url_ = this.baseUrl + "/api/services/app/HeroAppServic/UpdateHero";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateHero(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateHero(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GetHeroDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GetHeroDto>;
+        }));
+    }
+
+    protected processUpdateHero(response: HttpResponseBase): Observable<GetHeroDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetHeroDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable()
 export class ProductServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -2693,6 +2976,108 @@ export interface IGetCurrentLoginInformationsOutput {
     tenant: TenantLoginInfoDto;
 }
 
+export class GetHeroDto implements IGetHeroDto {
+    emailId: string | undefined;
+    name: string | undefined;
+    country: string | undefined;
+
+    constructor(data?: IGetHeroDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.emailId = _data["emailId"];
+            this.name = _data["name"];
+            this.country = _data["country"];
+        }
+    }
+
+    static fromJS(data: any): GetHeroDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetHeroDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["emailId"] = this.emailId;
+        data["name"] = this.name;
+        data["country"] = this.country;
+        return data;
+    }
+
+    clone(): GetHeroDto {
+        const json = this.toJSON();
+        let result = new GetHeroDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IGetHeroDto {
+    emailId: string | undefined;
+    name: string | undefined;
+    country: string | undefined;
+}
+
+export class GetHeroDtoListResultDto implements IGetHeroDtoListResultDto {
+    items: GetHeroDto[] | undefined;
+
+    constructor(data?: IGetHeroDtoListResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items.push(GetHeroDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): GetHeroDtoListResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetHeroDtoListResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data;
+    }
+
+    clone(): GetHeroDtoListResultDto {
+        const json = this.toJSON();
+        let result = new GetHeroDtoListResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IGetHeroDtoListResultDto {
+    items: GetHeroDto[] | undefined;
+}
+
 export class GetRoleForEditOutput implements IGetRoleForEditOutput {
     role: RoleEditDto;
     permissions: FlatPermissionDto[] | undefined;
@@ -2758,6 +3143,61 @@ export interface IGetRoleForEditOutput {
     role: RoleEditDto;
     permissions: FlatPermissionDto[] | undefined;
     grantedPermissionNames: string[] | undefined;
+}
+
+export class HeroDto implements IHeroDto {
+    emailId: string | undefined;
+    name: string | undefined;
+    superPower: string | undefined;
+    country: string | undefined;
+
+    constructor(data?: IHeroDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.emailId = _data["emailId"];
+            this.name = _data["name"];
+            this.superPower = _data["superPower"];
+            this.country = _data["country"];
+        }
+    }
+
+    static fromJS(data: any): HeroDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new HeroDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["emailId"] = this.emailId;
+        data["name"] = this.name;
+        data["superPower"] = this.superPower;
+        data["country"] = this.country;
+        return data;
+    }
+
+    clone(): HeroDto {
+        const json = this.toJSON();
+        let result = new HeroDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IHeroDto {
+    emailId: string | undefined;
+    name: string | undefined;
+    superPower: string | undefined;
+    country: string | undefined;
 }
 
 export class Int64EntityDto implements IInt64EntityDto {

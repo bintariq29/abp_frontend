@@ -3,7 +3,11 @@ import { RouterModule, Routes } from '@angular/router';
 import { HerosComponent } from './heros.component';
 
 const routes: Routes = [
-  {path:"",component:HerosComponent}
+  {
+    path: "", component: HerosComponent,
+    pathMatch: "full"
+  }
+
 ];
 
 @NgModule({
@@ -11,3 +15,13 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class HerosRoutingModule { }
+
+
+
+
+
+
+
+
+
+
