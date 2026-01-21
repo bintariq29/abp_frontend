@@ -14,6 +14,7 @@ import { HeroAppServicServiceProxy } from '@shared/service-proxies/service-proxi
 })
 export class HerosComponent {
   keyword='';
+  advancedFiltersVisible=true;
   constructor(
     private _heroService: HeroAppServicServiceProxy
   ) {
@@ -26,6 +27,7 @@ export class HerosComponent {
 
   list(): void {
     alert(this.keyword)
+
 
   }
 
