@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmationService, LazyLoadEvent, PrimeTemplate } from 'primeng/api';
 import { PaginatorModule } from 'primeng/paginator';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-
 import { LocalizePipe } from '@shared/pipes/localize.pipe';
 import { HeroAppServicServiceProxy, HeroDto } from '@shared/service-proxies/service-proxies';
 import { AppComponentBase } from '@shared/app-component-base';
@@ -15,7 +14,7 @@ import { TableModule } from 'primeng/table';
   ],
   templateUrl: './heros.component.html',
   standalone: true,
-  providers: [HeroAppServicServiceProxy, ConfirmationService],
+  providers: [HeroAppServicServiceProxy,],
   animations: [appModuleAnimation()]
 })
 export class HerosComponent extends AppComponentBase implements OnInit {
@@ -31,8 +30,6 @@ export class HerosComponent extends AppComponentBase implements OnInit {
     private _heroService: HeroAppServicServiceProxy,
     private _cd: ChangeDetectorRef,
     injector: Injector,
-    cd: ChangeDetectorRef,
-    private confirmationService: ConfirmationService
   ) {
     super(injector);
   }
@@ -50,6 +47,21 @@ export class HerosComponent extends AppComponentBase implements OnInit {
 
   createHero() {
 
+  }
+
+  deleteHero(hero: any): void {
+    abp.message.confirm(
+      this.l('Hero Delete Warning Message', hero.name),
+      undefined,
+      (result: boolean) => {
+        if (result) {
+          this._heroService.deleteHeroByEmailId(hero.emailId).subscribe(() => {
+            abp.notify.success(this.l('SuccessfullyDeleted'));
+            this.getHeros();
+          });
+        }
+      }
+    );
   }
 
 
