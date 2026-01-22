@@ -4,7 +4,7 @@ import { HerosRoutingModule } from './heros-routing.module';
 import { CreateHeroDialogComponent } from './create-hero/create-hero-dialog.component';
 import { EidtHeroDialogComponent } from './edit-hero/eidt-hero-dialog.component';
 import { HerosComponent } from './heros.component';
-import { SharedModule } from '@node_modules/primeng/api';
+import { SharedModule } from 'primeng/api';
 
 
 @NgModule({
@@ -15,8 +15,7 @@ import { SharedModule } from '@node_modules/primeng/api';
     HerosRoutingModule,
     CreateHeroDialogComponent,
     EidtHeroDialogComponent,
-    HerosComponent
-
+    HerosComponent,
   ]
 })
 export class HerosModule { }

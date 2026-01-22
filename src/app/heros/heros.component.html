@@ -1,4 +1,7 @@
+    <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+
 <div [@routerTransition]>
+
     <section class="content-header">
         <div class="container-fluid">
             <div class="row">
@@ -6,7 +9,7 @@
                     <h1>{{ 'Heros' | localize }}</h1>
                 </div>
                 <div class="col-6 text-right">
-                    <a href="javascript:;" class="btn bg-blue" (click)="createUser()">
+                    <a href="javascript:;" class="btn bg-blue" (click)="createHero()">
                         <i class="fa fa-plus-square"></i>
                         {{ 'Create' | localize }}
                     </a>
@@ -14,6 +17,9 @@
             </div>
         </div>
     </section>
+
+
+
 
     <section class="content px-2 pb-3">
         <div class="container-fluid">
@@ -24,13 +30,12 @@
                         <div class="col-md-6">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <button type="button" class="btn bg-blue" (click)="list()">
+                                    <button type="button" class="btn bg-blue">
                                         <i class="fas fa-search"></i>
                                     </button>
                                 </div>
                                 <input type="text" class="form-control" name="keyword"
-                                    [placeholder]="'SearchWithThreeDot' | localize" [(ngModel)]="keyword"
-                                    (keyup.enter)="list()" />
+                                    [placeholder]="'SearchWithThreeDot' | localize" [(ngModel)]="keyword" />
                                 <div class="input-group-append">
                                     <button type="button" class="btn btn-default"
                                         (click)="advancedFiltersVisible = !advancedFiltersVisible">
@@ -94,6 +99,41 @@
                 </div>
 
 
+                <p-table [value]="heros" [paginator]="true" [rows]="10" responsiveLayout="scroll"
+                    styleClass="p-datatable-sm">
+
+                    <!-- Table Header -->
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email Id</th>
+                            <th>Country</th>
+                            <th style="width: 160px;">Actions</th>
+                        </tr>
+                    </ng-template>
+
+                    <!-- Table Body -->
+                    <ng-template pTemplate="body" let-hero>
+                        <tr>
+                            <td>{{ hero.name }}</td>
+                            <td>{{ hero.emailId }}</td>
+                            <td>{{ hero.country }}</td>
+                            <td>
+                                <div class="d-flex justify-content-start gap-2">
+                                    <button class="btn btn-sm btn-primary" (click)="getHeros()">
+                                        Update
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" (click)="getHeros()">
+                                        Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                </p-table>
+
+
 
 
 
@@ -101,7 +141,7 @@
                 <div class="card-footer table-card-footer bg-white border-top">
                     <div class="row">
                         <div class="col-sm-4 col-12 text-sm-left text-center">
-                            <button class="btn btn-secondary" (click)="refresh()">
+                            <button class="btn btn-secondary">
                                 <i class="fas fa-redo-alt"></i>
                             </button>
                         </div>
@@ -109,7 +149,6 @@
                             <div class="float-sm-right m-auto">
                                 <div class="primeng-paging-container">
                                     <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage" #paginator
-                                        (onPageChange)="list($event)"
                                         [totalRecords]="primengTableHelper.totalRecordsCount"
                                         [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage"
                                         [showCurrentPageReport]="true" [currentPageReportTemplate]="
