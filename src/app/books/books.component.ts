@@ -39,8 +39,10 @@ export class BooksComponent implements OnInit {
   checkUserRole() {
     const user = this.appSessionService.user;
     if (user.userName.toLowerCase() == 'admin') {
+      this.isAdmin = true;
       alert("Khushamdeed! User: " + user.userName + " Is Admin: " + this.isAdmin);
     } else {
+      this.isAdmin = false;
       alert("Koi user login nahi hai!");
     }
   }
@@ -80,7 +82,7 @@ export class BooksComponent implements OnInit {
 
         this.totalBooks = response.books.totalCount;
         this.isLoading = false;
-        console.log("Combined List Ready:", this.combineDataList);
+        alert(this.combineDataList);
       },
       error: (err) => {
         this.isLoading = false;
