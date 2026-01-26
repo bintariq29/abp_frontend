@@ -1,3 +1,21 @@
-<p>books works!</p>
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-<h1>Boook</h1>
+        <div>
+            <h2 class="m-0 text-dark font-weight-bold">Books</h2>
+        </div>
+
+        <div>
+            <button class="btn btn-primary px-4 shadow-sm" (click)="createBook()">
+                <i class="fa fa-plus me-2"></i>Create Book
+            </button>
+        </div>
+
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            <p class="text-muted mb-0">Book list is loading...</p>
+        </div>
+    </div>
+</div>
