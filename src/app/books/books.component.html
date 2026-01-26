@@ -16,13 +16,6 @@
     <div class="card border-0 shadow-sm">
         <div class="card-body p-4">
             <div class="container-fluid mt-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2>Books Management</h2>
-                    <button class="btn btn-primary" (click)="createBook()">
-                        <i class="fa fa-plus"></i> Add New Book
-                    </button>
-                </div>
-
                 <div *ngIf="isLoading" class="text-center my-5">
                     <div class="spinner-border text-primary"></div>
                     <p>Fetching Data...</p>
@@ -33,10 +26,10 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="bg-light">
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
+                                    <th>Book Id</th>
+                                    <th>Book Name</th>
                                     <th>Price</th>
-                                    <th>Status</th>
+                                    <th *ngIf="!isAdmin">Status</th>
                                     <th *ngIf="isAdmin">Requests</th>
                                     <th>Actions</th>
                                 </tr>
@@ -44,10 +37,10 @@
                             <tbody>
                                 <tr *ngFor="let item of combineDataList">
                                     <td>{{ item.id }}</td>
-                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.title }}</td>
                                     <td>{{ item.price | currency }}</td>
 
-                                    <td>
+                                    <td *ngIf="!isAdmin">
                                         <span class="badge"
                                             [ngClass]="item.requestDetails ? 'bg-warning' : 'bg-success'">
                                             {{ item.requestDetails ? item.requestDetails.status : 'Available' }}
@@ -63,18 +56,19 @@
                                     </td>
 
                                     <td>
-                                        <div *ngIf="isAdmin">
-                                            <button class="btn btn-sm btn-outline-primary me-1">Edit</button>
-                                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                        <div *ngIf="isAdmin" class="d-flex gap-3">
+                                            <button class="btn btn-sm btn-outline-primary">Edit Book</button>
+                                            <button class="btn btn-sm btn-outline-danger mx-2">Delete Book</button>
                                         </div>
+
 
                                         <div *ngIf="!isAdmin">
                                             <button class="btn btn-sm btn-outline-primary me-1">Edit Request</button>
 
-                                            <button *ngIf="!item.requestDetails" class="btn btn-sm btn-success">
+                                            <button *ngIf="!item.requestDetails" class="btn btn-sm btn-success mx-2">
                                                 Add Request
                                             </button>
-                                            <button *ngIf="item.requestDetails" class="btn btn-sm btn-danger">
+                                            <button *ngIf="item.requestDetails" class="btn btn-sm btn-danger mx-2">
                                                 Withdraw Request
                                             </button>
                                         </div>
