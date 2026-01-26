@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, Injector, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ConfirmationService, LazyLoadEvent, PrimeTemplate } from 'primeng/api';
 import { PaginatorModule } from 'primeng/paginator';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { LocalizePipe } from '@shared/pipes/localize.pipe';
