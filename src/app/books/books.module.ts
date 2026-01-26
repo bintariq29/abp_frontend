@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { BooksRoutingModule } from './books-routing.module';
 import { CreateBookDialogComponent } from './create-book/create-book-dialog.component'
 import { EditBookDialogComponent } from './edit-book/edit-book-dialog.component'
