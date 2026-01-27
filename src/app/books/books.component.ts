@@ -7,6 +7,7 @@ import { PermissionCheckerService } from '@node_modules/abp-ng2-module';
 import { AppSessionService } from '@shared/session/app-session.service';
 import { forkJoin } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
+import { EditBookDialogComponent } from './edit-book/edit-book-dialog.component';
 
 @Component({
   selector: 'app-books',
@@ -53,6 +54,8 @@ export class BooksComponent implements OnInit {
     });
   }
 
+
+
   loadAllData() {
     this.isLoading = true;
 
@@ -93,5 +96,18 @@ export class BooksComponent implements OnInit {
     });
   }
 
+  editBook(bookId: number): void {
+    const editModal = this.modalService.show(EditBookDialogComponent, {
+      initialState: {
+        id: bookId
+      }
+    });
 
+    editModal.content.onSave.subscribe(
+      () => {
+        this.loadAllData();
+      }
+    );
+
+  }
 }
