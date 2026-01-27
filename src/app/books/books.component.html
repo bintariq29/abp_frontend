@@ -87,7 +87,8 @@
                                                 (click)="addRequest(item)">
                                                 Add Request
                                             </button>
-                                            <button *ngIf="item.requestDetails" class="btn btn-sm btn-danger mx-2">
+                                            <button *ngIf="item.requestDetails" class="btn btn-sm btn-danger mx-2"
+                                                (click)="withdrawRequest(item.requestDetails.requestId,item.title,item)">
                                                 Withdraw Request
                                             </button>
                                         </div>

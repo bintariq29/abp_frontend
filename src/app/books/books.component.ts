@@ -3,13 +3,14 @@ import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { BookDto, BookRequestServiceProxy, BookServiceProxy, UserLoginInfoDto } from '@shared/service-proxies/service-proxies';
 import { CreateBookDialogComponent } from './create-book/create-book-dialog.component';
 import { CommonModule } from '@node_modules/@angular/common';
-import { PermissionCheckerService } from '@node_modules/abp-ng2-module';
+import { NotifyService, PermissionCheckerService } from '@node_modules/abp-ng2-module';
 import { AppSessionService } from '@shared/session/app-session.service';
 import { forkJoin } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
 import { EditBookDialogComponent } from './edit-book/edit-book-dialog.component';
 import { AddRequestDialogComponent } from './add-request/add-request-dialog.component';
 import { EditRequestDialogComponent } from './edit-request/edit-request-dialog.component';
+import { Console } from 'console';
 
 @Component({
   selector: 'app-books',
@@ -34,7 +35,8 @@ export class BooksComponent implements OnInit {
     private bookRequestService: BookRequestServiceProxy,
     private appSessionService: AppSessionService,
     private permissionService: PermissionCheckerService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private _notify: NotifyService
 
   ) {
   }
@@ -94,13 +96,36 @@ export class BooksComponent implements OnInit {
       initialState: {
         requestDto: requestItem,
         userInfo: this.userInfo,
-        requestedBookId:bookId
+        requestedBookId: bookId
       }
     });
 
     editModal.content.onSave.subscribe(() => {
       this.loadAllData();
     });
+  }
+
+  withdrawRequest(requestId: number, bookName: string, item: any): void {
+
+    abp.message.confirm(
+      `Are you sure you want to withdraw the request for "${bookName}"?`,
+      "Withdraw Confirmation",
+      (result: boolean) => {
+        if (result) {
+          this.bookRequestService.delete(requestId).subscribe({
+            next: () => {
+              this._notify.success('Request withdrawn successfully');
+
+
+              this.loadAllData();
+            },
+            error: (err) => {
+              console.error("Withdraw Error:", err);
+            }
+          });
+        }
+      }
+    );
   }
 
 
