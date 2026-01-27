@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
-import { BookRequestServiceProxy, BookServiceProxy } from '@shared/service-proxies/service-proxies';
+import { BookDto, BookRequestServiceProxy, BookServiceProxy } from '@shared/service-proxies/service-proxies';
 import { CreateBookDialogComponent } from './create-book/create-book-dialog.component';
 import { CommonModule } from '@node_modules/@angular/common';
 import { PermissionCheckerService } from '@node_modules/abp-ng2-module';
@@ -109,5 +109,26 @@ export class BooksComponent implements OnInit {
       }
     );
 
+  }
+
+  deleteBook(book: BookDto): void {
+    abp.message.confirm(
+      `Are you sure you want to delete "${book.title}"?`,
+      'Delete Book',
+      (result: boolean) => {
+        if (result) {
+          this.bookService.delete(book.id).subscribe({
+            next: () => {
+              abp.notify.success('Successfully Deleted');
+              this.loadAllData();
+            },
+            error: (err) => {
+              console.error(err);
+              abp.notify.error('Something went wrong!');
+            }
+          });
+        }
+      }
+    );
   }
 }
