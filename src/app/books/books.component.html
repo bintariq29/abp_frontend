@@ -5,7 +5,7 @@
             <h2 class="m-0 text-dark font-weight-bold">Books</h2>
         </div>
 
-        <div>
+        <div *ngIf="isAdmin==true">
             <button class="btn btn-primary px-4 shadow-sm" (click)="createBook()">
                 <i class="fa fa-plus me-2"></i>Create Book
             </button>
@@ -70,7 +70,8 @@
                                         <div *ngIf="isAdmin" class="d-flex gap-3">
                                             <button class="btn btn-sm btn-outline-primary"
                                                 (click)="editBook(item.id)">Edit Book</button>
-                                            <button class="btn btn-sm btn-outline-danger mx-2" , (click)="deleteBook(item)">Delete Book</button>
+                                            <button class="btn btn-sm btn-outline-danger mx-2" ,
+                                                (click)="deleteBook(item)">Delete Book</button>
                                         </div>
 
 

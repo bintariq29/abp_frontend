@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
-import { BookDto, BookRequestServiceProxy, BookServiceProxy } from '@shared/service-proxies/service-proxies';
+import { BookDto, BookRequestServiceProxy, BookServiceProxy, UserLoginInfoDto } from '@shared/service-proxies/service-proxies';
 import { CreateBookDialogComponent } from './create-book/create-book-dialog.component';
 import { CommonModule } from '@node_modules/@angular/common';
 import { PermissionCheckerService } from '@node_modules/abp-ng2-module';
@@ -24,6 +24,7 @@ export class BooksComponent implements OnInit {
   totalBooks = 0;
   totalRequests = 0;
   isAdmin = false;
+  userInfo: UserLoginInfoDto = this.appSessionService.user;
 
   constructor(
     private bookService: BookServiceProxy,
@@ -41,6 +42,8 @@ export class BooksComponent implements OnInit {
   }
   checkUserRole() {
     const user = this.appSessionService.user;
+    const userId = this.appSessionService.user.id;
+    console.log("USER KI ID", userId);
     if (user.userName.toLowerCase() == 'admin') {
       this.isAdmin = true;
     } else {
@@ -61,12 +64,12 @@ export class BooksComponent implements OnInit {
 
     forkJoin({
       books: this.bookService.getAll("id asc", 0, 10),
-      requests: this.bookRequestService.getAll("id asc", 0, 10)
+      requests: this.isAdmin ? this.bookRequestService.getAll("id asc", 0, 10) : this.bookRequestService.getRequestsByUserId(this.userInfo.id),
     }).subscribe({
       next: (response) => {
         const books = response.books.items;
         const requests = response.requests.items;
-
+        console.log("REQUESTS KA DATA", requests)
         this.combineDataList = books.map(book => {
           // 1. Is book ki request dhoondo (BookId se match karo)
           const relatedRequest = requests.find(req => req.bookId === book.id);
