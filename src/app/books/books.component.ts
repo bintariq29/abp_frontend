@@ -6,6 +6,7 @@ import { CommonModule } from '@node_modules/@angular/common';
 import { PermissionCheckerService } from '@node_modules/abp-ng2-module';
 import { AppSessionService } from '@shared/session/app-session.service';
 import { forkJoin } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-books',
@@ -28,7 +29,8 @@ export class BooksComponent implements OnInit {
     private modalService: BsModalService,
     private bookRequestService: BookRequestServiceProxy,
     private appSessionService: AppSessionService,
-    private permissionService: PermissionCheckerService
+    private permissionService: PermissionCheckerService,
+    private cdr: ChangeDetectorRef
 
   ) {
   }
@@ -40,10 +42,8 @@ export class BooksComponent implements OnInit {
     const user = this.appSessionService.user;
     if (user.userName.toLowerCase() == 'admin') {
       this.isAdmin = true;
-      alert("Khushamdeed! User: " + user.userName + " Is Admin: " + this.isAdmin);
     } else {
       this.isAdmin = false;
-      alert("Koi user login nahi hai!");
     }
   }
   createBook() {
@@ -54,8 +54,8 @@ export class BooksComponent implements OnInit {
     this.isLoading = true;
 
     forkJoin({
-      books: this.bookService.getAll(undefined, 0, 10),
-      requests: this.bookRequestService.getAll(undefined, 0, 10)
+      books: this.bookService.getAll("id asc", 0, 10),
+      requests: this.bookRequestService.getAll("id asc", 0, 10)
     }).subscribe({
       next: (response) => {
         const books = response.books.items;
@@ -67,8 +67,8 @@ export class BooksComponent implements OnInit {
 
           // 2. Naya object banao jis mein book ka data ho + request ka data (agar ho to)
           return {
-            ...book, // Book ka sara data (id, title, price)
-            // Agar request mili to uske extra fields, warna null
+            ...book,
+
             requestDetails: relatedRequest ? {
               requestId: relatedRequest.id,
               userName: relatedRequest.userName,
@@ -82,11 +82,10 @@ export class BooksComponent implements OnInit {
 
         this.totalBooks = response.books.totalCount;
         this.isLoading = false;
-        alert(this.combineDataList);
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.isLoading = false;
-        alert("Koi ek API fail ho gayi");
       }
     });
   }
