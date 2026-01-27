@@ -8,6 +8,7 @@ import { AppSessionService } from '@shared/session/app-session.service';
 import { forkJoin } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
 import { EditBookDialogComponent } from './edit-book/edit-book-dialog.component';
+import { AddRequestDialogComponent } from './add-request/add-request-dialog.component';
 
 @Component({
   selector: 'app-books',
@@ -57,6 +58,37 @@ export class BooksComponent implements OnInit {
     });
   }
 
+  editBook(bookId: number): void {
+    const editModal = this.modalService.show(EditBookDialogComponent, {
+      initialState: {
+        id: bookId
+      }
+    });
+
+    editModal.content.onSave.subscribe(
+      () => {
+        this.loadAllData();
+      }
+    );
+
+  }
+
+  addRequest(bookDetails: BookDto) {
+    const addRequestModal = this.modalService.show(AddRequestDialogComponent,
+      {
+        initialState: {
+          bookDetails: bookDetails,
+          userDetails: this.userInfo,
+        }
+      }
+    );
+    addRequestModal.content.onSave.subscribe(() => {
+      this.loadAllData();
+    });
+  }
+
+
+
 
 
   loadAllData() {
@@ -99,20 +131,7 @@ export class BooksComponent implements OnInit {
     });
   }
 
-  editBook(bookId: number): void {
-    const editModal = this.modalService.show(EditBookDialogComponent, {
-      initialState: {
-        id: bookId
-      }
-    });
 
-    editModal.content.onSave.subscribe(
-      () => {
-        this.loadAllData();
-      }
-    );
-
-  }
 
   deleteBook(book: BookDto): void {
     abp.message.confirm(
