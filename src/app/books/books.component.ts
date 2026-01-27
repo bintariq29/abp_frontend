@@ -9,6 +9,7 @@ import { forkJoin } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
 import { EditBookDialogComponent } from './edit-book/edit-book-dialog.component';
 import { AddRequestDialogComponent } from './add-request/add-request-dialog.component';
+import { EditRequestDialogComponent } from './edit-request/edit-request-dialog.component';
 
 @Component({
   selector: 'app-books',
@@ -83,6 +84,21 @@ export class BooksComponent implements OnInit {
       }
     );
     addRequestModal.content.onSave.subscribe(() => {
+      this.loadAllData();
+    });
+  }
+
+  editRequest(requestItem: any, bookId): void {
+    const editModal = this.modalService.show(EditRequestDialogComponent, {
+      class: 'modal-md',
+      initialState: {
+        requestDto: requestItem,
+        userInfo: this.userInfo,
+        requestedBookId:bookId
+      }
+    });
+
+    editModal.content.onSave.subscribe(() => {
       this.loadAllData();
     });
   }

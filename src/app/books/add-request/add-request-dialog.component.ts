@@ -33,7 +33,6 @@ export class AddRequestDialogComponent implements OnInit {
     if (this.bookDetails && this.userDetails) {
       this.request.bookId = this.bookDetails.id;
       this.request.userId = this.userDetails.id;
-
       this.request.requestDays = 1;
 
       this.request.userName = this.userDetails.userName;

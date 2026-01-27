@@ -3313,6 +3313,7 @@ export class BookRequestDto implements IBookRequestDto {
     requestDays: number;
     status: boolean | undefined;
     email: string | undefined;
+    isApproved: boolean | undefined;
 
     constructor(data?: IBookRequestDto) {
         if (data) {
@@ -3334,6 +3335,7 @@ export class BookRequestDto implements IBookRequestDto {
             this.requestDays = _data["requestDays"];
             this.status = _data["status"];
             this.email = _data["email"];
+            this.isApproved = _data["isApproved"];
         }
     }
 
@@ -3355,6 +3357,7 @@ export class BookRequestDto implements IBookRequestDto {
         data["requestDays"] = this.requestDays;
         data["status"] = this.status;
         data["email"] = this.email;
+        data["isApproved"] = this.isApproved;
         return data;
     }
 
@@ -3376,6 +3379,7 @@ export interface IBookRequestDto {
     requestDays: number;
     status: boolean | undefined;
     email: string | undefined;
+    isApproved: boolean | undefined;
 }
 
 export class BookRequestDtoPagedResultDto implements IBookRequestDtoPagedResultDto {
@@ -3622,6 +3626,7 @@ export class CreateBookRequestDto implements ICreateBookRequestDto {
     requestDays: number;
     status: boolean | undefined;
     email: string | undefined;
+    isApproved: boolean | undefined;
 
     constructor(data?: ICreateBookRequestDto) {
         if (data) {
@@ -3642,6 +3647,7 @@ export class CreateBookRequestDto implements ICreateBookRequestDto {
             this.requestDays = _data["requestDays"];
             this.status = _data["status"];
             this.email = _data["email"];
+            this.isApproved = _data["isApproved"];
         }
     }
 
@@ -3662,6 +3668,7 @@ export class CreateBookRequestDto implements ICreateBookRequestDto {
         data["requestDays"] = this.requestDays;
         data["status"] = this.status;
         data["email"] = this.email;
+        data["isApproved"] = this.isApproved;
         return data;
     }
 
@@ -3682,6 +3689,7 @@ export interface ICreateBookRequestDto {
     requestDays: number;
     status: boolean | undefined;
     email: string | undefined;
+    isApproved: boolean | undefined;
 }
 
 export class CreateProductDto implements ICreateProductDto {
@@ -5392,6 +5400,7 @@ export class UpdateStatusBookRequestDto implements IUpdateStatusBookRequestDto {
     status: boolean | undefined;
     userId: number;
     bookId: number;
+    isApproved: boolean | undefined;
 
     constructor(data?: IUpdateStatusBookRequestDto) {
         if (data) {
@@ -5408,6 +5417,7 @@ export class UpdateStatusBookRequestDto implements IUpdateStatusBookRequestDto {
             this.status = _data["status"];
             this.userId = _data["userId"];
             this.bookId = _data["bookId"];
+            this.isApproved = _data["isApproved"];
         }
     }
 
@@ -5424,6 +5434,7 @@ export class UpdateStatusBookRequestDto implements IUpdateStatusBookRequestDto {
         data["status"] = this.status;
         data["userId"] = this.userId;
         data["bookId"] = this.bookId;
+        data["isApproved"] = this.isApproved;
         return data;
     }
 
@@ -5440,6 +5451,7 @@ export interface IUpdateStatusBookRequestDto {
     status: boolean | undefined;
     userId: number;
     bookId: number;
+    isApproved: boolean | undefined;
 }
 
 export class UserDto implements IUserDto {

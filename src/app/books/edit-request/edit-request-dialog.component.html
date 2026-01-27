@@ -1,1 +1,36 @@
-<p>edit-request-dialog works!</p>
+<form novalidate autocomplete="off" #editRequestForm="ngForm" (ngSubmit)="save()">
+    <div class="modal-header">
+        <h4 class="modal-title">Update Your Request</h4>
+        <button type="button" class="btn-close" (click)="bsModalRef.hide()"></button>
+    </div>
+
+    <div class="modal-body">
+        <div class="form-group mb-3">
+            <label class="form-label">Book Name</label>
+            <input type="text" class="form-control" [value]="requestDto.bookName" readonly>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Requesting User</label>
+            <input type="text" class="form-control" [value]="requestDto.userName" readonly>
+        </div>
+
+        <div class="form-group mb-3">
+            <div class="form-group mb-3">
+                <label class="form-label">Update Days</label>
+                <input type="number" class="form-control" name="requestDays" [(ngModel)]="request.requestDays" required
+                    min="1" #daysModel="ngModel" [ngClass]="{ 'is-invalid': daysModel.touched && daysModel.invalid }">
+
+                <div class="invalid-feedback">Please enter valid days (min 1).</div>
+            </div>
+            <div class="invalid-feedback">Please enter valid days (min 1).</div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="bsModalRef.hide()">Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!editRequestForm.form.valid || saving">
+            {{ saving ? 'Saving...' : 'Save Changes' }}
+        </button>
+    </div>
+</form>
