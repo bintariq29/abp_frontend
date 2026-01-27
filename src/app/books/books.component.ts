@@ -47,7 +47,10 @@ export class BooksComponent implements OnInit {
     }
   }
   createBook() {
-    this.modalService.show(CreateBookDialogComponent)
+    const createModal = this.modalService.show(CreateBookDialogComponent)
+    createModal.content.onSave.subscribe(() => {
+      this.loadAllData();
+    });
   }
 
   loadAllData() {

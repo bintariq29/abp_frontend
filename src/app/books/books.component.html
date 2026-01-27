@@ -41,9 +41,20 @@
                                     <td>{{ item.price | currency }}</td>
 
                                     <td *ngIf="!isAdmin">
-                                        <span class="badge"
-                                            [ngClass]="item.requestDetails ? 'bg-warning' : 'bg-success'">
-                                            {{ item.requestDetails ? item.requestDetails.status : 'Available' }}
+                                        <span *ngIf="!item.requestDetails" class="badge bg-success">
+                                            Available
+                                        </span>
+
+                                        <span *ngIf="item.requestDetails" class="badge" [ngClass]="{
+            'bg-info': item.requestDetails.status === null,
+            'bg-success': item.requestDetails.status === true,
+            'bg-danger': item.requestDetails.status === false
+        }">
+
+                                            {{
+                                            item.requestDetails.status === null ? 'Pending' :
+                                            (item.requestDetails.status === true ? 'Approved' : 'Rejected')
+                                            }}
                                         </span>
                                     </td>
 
