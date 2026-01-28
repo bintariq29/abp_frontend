@@ -42,15 +42,16 @@ export class ViewBookRequestsComponent implements OnInit {
 
 
   approveRequest(req: any) {
-    this.updateStatus(req, 'Approved');
+    this.processStatusUpdate(req, true, 'Approve');
   }
 
   rejectRequest(req: any) {
-    this.updateStatus(req, 'Rejected');
+    this.processStatusUpdate(req, false, 'Reject');
   }
-  private updateStatus(req: any, status: string) {
+
+  private processStatusUpdate(req: any, isTargetApproved: boolean, actionText: string) {
     abp.message.confirm(
-      `Do you want to ${status} request for "${req.bookName}"?`,
+      `Do you want to ${actionText} request for "${req.bookName}"?`,
       "Confirm Action",
       (result: boolean) => {
         if (result) {
@@ -58,11 +59,14 @@ export class ViewBookRequestsComponent implements OnInit {
           input.id = req.id;
           input.userId = req.userId;
           input.bookId = req.bookId;
-          // input.status = status;
+
+          // Agar tumhare DTO mein variables boolean hain to aise assign karo:
+          input.status = isTargetApproved;
+          input.isApproved = isTargetApproved;
 
           this.bookRequestService.updateRequestStatus(input).subscribe(() => {
-            this.notifyService.success(`Successfully ${status}`);
-            this.loadRequests(); // Refresh list
+            this.notifyService.success(`Successfully ${actionText}ed`);
+            this.loadRequests();
           });
         }
       }
