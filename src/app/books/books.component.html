@@ -28,6 +28,7 @@
                                 <tr>
                                     <th>Book Id</th>
                                     <th>Book Name</th>
+                                    <th>Stock</th>
                                     <th>Price</th>
                                     <th *ngIf="!isAdmin">Status</th>
                                     <th *ngIf="isAdmin">Requests</th>
@@ -38,6 +39,7 @@
                                 <tr *ngFor="let item of combineDataList">
                                     <td>{{ item.id }}</td>
                                     <td>{{ item.title }}</td>
+                                    <td>{{ item.stock }}</td>
                                     <td>{{ item.price | currency }}</td>
 
                                     <td *ngIf="!isAdmin">

@@ -61,8 +61,8 @@ export class ViewBookRequestsComponent implements OnInit {
           input.bookId = req.bookId;
 
           // Agar tumhare DTO mein variables boolean hain to aise assign karo:
-          input.status = isTargetApproved;
-          input.isApproved = isTargetApproved;
+          // input.status = isTargetApproved;
+          // input.isApproved = isTargetApproved;
 
           this.bookRequestService.updateRequestStatus(input).subscribe(() => {
             this.notifyService.success(`Successfully ${actionText}ed`);

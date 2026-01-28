@@ -153,6 +153,170 @@ export class BookServiceProxy {
     }
 
     /**
+     * @param body (optional) 
+     * @return OK
+     */
+    update(body: UpdateBookDto | undefined): Observable<BookDto> {
+        let url_ = this.baseUrl + "/api/services/app/Book/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<BookDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<BookDto>;
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<BookDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BookDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return OK
+     */
+    delete(id: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Book/Delete?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    create(body: CreateBookDto | undefined): Observable<BookDto> {
+        let url_ = this.baseUrl + "/api/services/app/Book/Create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<BookDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<BookDto>;
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<BookDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BookDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
      * @param id (optional) 
      * @return OK
      */
@@ -273,170 +437,6 @@ export class BookServiceProxy {
         }
         return _observableOf(null as any);
     }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    create(body: CreateBookDto | undefined): Observable<BookDto> {
-        let url_ = this.baseUrl + "/api/services/app/Book/Create";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCreate(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processCreate(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<BookDto>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<BookDto>;
-        }));
-    }
-
-    protected processCreate(response: HttpResponseBase): Observable<BookDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BookDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    update(body: UpdateBookDto | undefined): Observable<BookDto> {
-        let url_ = this.baseUrl + "/api/services/app/Book/Update";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdate(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUpdate(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<BookDto>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<BookDto>;
-        }));
-    }
-
-    protected processUpdate(response: HttpResponseBase): Observable<BookDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BookDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    /**
-     * @param id (optional) 
-     * @return OK
-     */
-    delete(id: number | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/services/app/Book/Delete?";
-        if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
-        else if (id !== undefined)
-            url_ += "Id=" + encodeURIComponent("" + id) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDelete(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processDelete(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processDelete(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return _observableOf(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
 }
 
 @Injectable()
@@ -448,62 +448,6 @@ export class BookRequestServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ?? "";
-    }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    updateRequestStatus(body: UpdateStatusBookRequestDto | undefined): Observable<BookRequestDto> {
-        let url_ = this.baseUrl + "/api/services/app/BookRequest/UpdateRequestStatus";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdateRequestStatus(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUpdateRequestStatus(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<BookRequestDto>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<BookRequestDto>;
-        }));
-    }
-
-    protected processUpdateRequestStatus(response: HttpResponseBase): Observable<BookRequestDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BookRequestDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
     }
 
     /**
@@ -563,40 +507,40 @@ export class BookRequestServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param userId (optional) 
      * @return OK
      */
-    update(body: UpdateDaysBookRequestDto | undefined): Observable<BookRequestDto> {
-        let url_ = this.baseUrl + "/api/services/app/BookRequest/Update";
+    getRequestsByUserId(userId: number | undefined): Observable<BookRequestDtoPagedResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/BookRequest/GetRequestsByUserId?";
+        if (userId === null)
+            throw new Error("The parameter 'userId' cannot be null.");
+        else if (userId !== undefined)
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_ : any = {
-            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdate(response_);
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetRequestsByUserId(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processUpdate(response_ as any);
+                    return this.processGetRequestsByUserId(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<BookRequestDto>;
+                    return _observableThrow(e) as any as Observable<BookRequestDtoPagedResultDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<BookRequestDto>;
+                return _observableThrow(response_) as any as Observable<BookRequestDtoPagedResultDto>;
         }));
     }
 
-    protected processUpdate(response: HttpResponseBase): Observable<BookRequestDto> {
+    protected processGetRequestsByUserId(response: HttpResponseBase): Observable<BookRequestDtoPagedResultDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -607,7 +551,7 @@ export class BookRequestServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BookRequestDto.fromJS(resultData200);
+            result200 = BookRequestDtoPagedResultDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -793,40 +737,40 @@ export class BookRequestServiceProxy {
     }
 
     /**
-     * @param userId (optional) 
+     * @param body (optional) 
      * @return OK
      */
-    getRequestsByUserId(userId: number | undefined): Observable<BookRequestDtoPagedResultDto> {
-        let url_ = this.baseUrl + "/api/services/app/BookRequest/GetRequestsByUserId?";
-        if (userId === null)
-            throw new Error("The parameter 'userId' cannot be null.");
-        else if (userId !== undefined)
-            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
+    update(body: UpdateDaysBookRequestDto | undefined): Observable<BookRequestDto> {
+        let url_ = this.baseUrl + "/api/services/app/BookRequest/Update";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json",
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetRequestsByUserId(response_);
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetRequestsByUserId(response_ as any);
+                    return this.processUpdate(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<BookRequestDtoPagedResultDto>;
+                    return _observableThrow(e) as any as Observable<BookRequestDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<BookRequestDtoPagedResultDto>;
+                return _observableThrow(response_) as any as Observable<BookRequestDto>;
         }));
     }
 
-    protected processGetRequestsByUserId(response: HttpResponseBase): Observable<BookRequestDtoPagedResultDto> {
+    protected processUpdate(response: HttpResponseBase): Observable<BookRequestDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -837,7 +781,63 @@ export class BookRequestServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = BookRequestDtoPagedResultDto.fromJS(resultData200);
+            result200 = BookRequestDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    updateRequestStatus(body: UpdateStatusBookRequestDto | undefined): Observable<BookRequestDto> {
+        let url_ = this.baseUrl + "/api/services/app/BookRequest/UpdateRequestStatus";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateRequestStatus(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateRequestStatus(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<BookRequestDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<BookRequestDto>;
+        }));
+    }
+
+    protected processUpdateRequestStatus(response: HttpResponseBase): Observable<BookRequestDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BookRequestDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3201,6 +3201,7 @@ export class BookDto implements IBookDto {
     id: number;
     title: string | undefined;
     price: number;
+    stock: number;
 
     constructor(data?: IBookDto) {
         if (data) {
@@ -3216,6 +3217,7 @@ export class BookDto implements IBookDto {
             this.id = _data["id"];
             this.title = _data["title"];
             this.price = _data["price"];
+            this.stock = _data["stock"];
         }
     }
 
@@ -3231,6 +3233,7 @@ export class BookDto implements IBookDto {
         data["id"] = this.id;
         data["title"] = this.title;
         data["price"] = this.price;
+        data["stock"] = this.stock;
         return data;
     }
 
@@ -3246,6 +3249,7 @@ export interface IBookDto {
     id: number;
     title: string | undefined;
     price: number;
+    stock: number;
 }
 
 export class BookDtoPagedResultDto implements IBookDtoPagedResultDto {
@@ -3311,9 +3315,9 @@ export class BookRequestDto implements IBookRequestDto {
     bookName: string | undefined;
     dateTime: string | undefined;
     requestDays: number;
-    status: boolean | undefined;
+    status: string;
+    stock: number;
     email: string | undefined;
-    isApproved: boolean | undefined;
 
     constructor(data?: IBookRequestDto) {
         if (data) {
@@ -3334,8 +3338,8 @@ export class BookRequestDto implements IBookRequestDto {
             this.dateTime = _data["dateTime"];
             this.requestDays = _data["requestDays"];
             this.status = _data["status"];
+            this.stock = _data["stock"];
             this.email = _data["email"];
-            this.isApproved = _data["isApproved"];
         }
     }
 
@@ -3356,8 +3360,8 @@ export class BookRequestDto implements IBookRequestDto {
         data["dateTime"] = this.dateTime;
         data["requestDays"] = this.requestDays;
         data["status"] = this.status;
+        data["stock"] = this.stock;
         data["email"] = this.email;
-        data["isApproved"] = this.isApproved;
         return data;
     }
 
@@ -3377,9 +3381,9 @@ export interface IBookRequestDto {
     bookName: string | undefined;
     dateTime: string | undefined;
     requestDays: number;
-    status: boolean | undefined;
+    status: string;
+    stock: number;
     email: string | undefined;
-    isApproved: boolean | undefined;
 }
 
 export class BookRequestDtoPagedResultDto implements IBookRequestDtoPagedResultDto {
@@ -3573,6 +3577,7 @@ export interface IChangeUserLanguageDto {
 export class CreateBookDto implements ICreateBookDto {
     title: string | undefined;
     price: number;
+    stock: number;
 
     constructor(data?: ICreateBookDto) {
         if (data) {
@@ -3587,6 +3592,7 @@ export class CreateBookDto implements ICreateBookDto {
         if (_data) {
             this.title = _data["title"];
             this.price = _data["price"];
+            this.stock = _data["stock"];
         }
     }
 
@@ -3601,6 +3607,7 @@ export class CreateBookDto implements ICreateBookDto {
         data = typeof data === 'object' ? data : {};
         data["title"] = this.title;
         data["price"] = this.price;
+        data["stock"] = this.stock;
         return data;
     }
 
@@ -3615,6 +3622,7 @@ export class CreateBookDto implements ICreateBookDto {
 export interface ICreateBookDto {
     title: string | undefined;
     price: number;
+    stock: number;
 }
 
 export class CreateBookRequestDto implements ICreateBookRequestDto {
@@ -3624,9 +3632,9 @@ export class CreateBookRequestDto implements ICreateBookRequestDto {
     bookName: string | undefined;
     dateTime: string | undefined;
     requestDays: number;
-    status: boolean | undefined;
+    status: string;
+    stock: number;
     email: string | undefined;
-    isApproved: boolean | undefined;
 
     constructor(data?: ICreateBookRequestDto) {
         if (data) {
@@ -3646,8 +3654,8 @@ export class CreateBookRequestDto implements ICreateBookRequestDto {
             this.dateTime = _data["dateTime"];
             this.requestDays = _data["requestDays"];
             this.status = _data["status"];
+            this.stock = _data["stock"];
             this.email = _data["email"];
-            this.isApproved = _data["isApproved"];
         }
     }
 
@@ -3667,8 +3675,8 @@ export class CreateBookRequestDto implements ICreateBookRequestDto {
         data["dateTime"] = this.dateTime;
         data["requestDays"] = this.requestDays;
         data["status"] = this.status;
+        data["stock"] = this.stock;
         data["email"] = this.email;
-        data["isApproved"] = this.isApproved;
         return data;
     }
 
@@ -3687,9 +3695,9 @@ export interface ICreateBookRequestDto {
     bookName: string | undefined;
     dateTime: string | undefined;
     requestDays: number;
-    status: boolean | undefined;
+    status: string;
+    stock: number;
     email: string | undefined;
-    isApproved: boolean | undefined;
 }
 
 export class CreateProductDto implements ICreateProductDto {
@@ -5296,6 +5304,7 @@ export interface ITenantLoginInfoDto {
 export class UpdateBookDto implements IUpdateBookDto {
     id: number;
     price: number;
+    stock: number;
 
     constructor(data?: IUpdateBookDto) {
         if (data) {
@@ -5310,6 +5319,7 @@ export class UpdateBookDto implements IUpdateBookDto {
         if (_data) {
             this.id = _data["id"];
             this.price = _data["price"];
+            this.stock = _data["stock"];
         }
     }
 
@@ -5324,6 +5334,7 @@ export class UpdateBookDto implements IUpdateBookDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["price"] = this.price;
+        data["stock"] = this.stock;
         return data;
     }
 
@@ -5338,6 +5349,7 @@ export class UpdateBookDto implements IUpdateBookDto {
 export interface IUpdateBookDto {
     id: number;
     price: number;
+    stock: number;
 }
 
 export class UpdateDaysBookRequestDto implements IUpdateDaysBookRequestDto {
@@ -5345,6 +5357,7 @@ export class UpdateDaysBookRequestDto implements IUpdateDaysBookRequestDto {
     requestDays: number;
     userId: number;
     bookId: number;
+    stock: number;
 
     constructor(data?: IUpdateDaysBookRequestDto) {
         if (data) {
@@ -5361,6 +5374,7 @@ export class UpdateDaysBookRequestDto implements IUpdateDaysBookRequestDto {
             this.requestDays = _data["requestDays"];
             this.userId = _data["userId"];
             this.bookId = _data["bookId"];
+            this.stock = _data["stock"];
         }
     }
 
@@ -5377,6 +5391,7 @@ export class UpdateDaysBookRequestDto implements IUpdateDaysBookRequestDto {
         data["requestDays"] = this.requestDays;
         data["userId"] = this.userId;
         data["bookId"] = this.bookId;
+        data["stock"] = this.stock;
         return data;
     }
 
@@ -5393,14 +5408,15 @@ export interface IUpdateDaysBookRequestDto {
     requestDays: number;
     userId: number;
     bookId: number;
+    stock: number;
 }
 
 export class UpdateStatusBookRequestDto implements IUpdateStatusBookRequestDto {
     id: number;
-    status: boolean | undefined;
+    stock: number;
     userId: number;
     bookId: number;
-    isApproved: boolean | undefined;
+    status: string;
 
     constructor(data?: IUpdateStatusBookRequestDto) {
         if (data) {
@@ -5414,10 +5430,10 @@ export class UpdateStatusBookRequestDto implements IUpdateStatusBookRequestDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.status = _data["status"];
+            this.stock = _data["stock"];
             this.userId = _data["userId"];
             this.bookId = _data["bookId"];
-            this.isApproved = _data["isApproved"];
+            this.status = _data["status"];
         }
     }
 
@@ -5431,10 +5447,10 @@ export class UpdateStatusBookRequestDto implements IUpdateStatusBookRequestDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["status"] = this.status;
+        data["stock"] = this.stock;
         data["userId"] = this.userId;
         data["bookId"] = this.bookId;
-        data["isApproved"] = this.isApproved;
+        data["status"] = this.status;
         return data;
     }
 
@@ -5448,10 +5464,10 @@ export class UpdateStatusBookRequestDto implements IUpdateStatusBookRequestDto {
 
 export interface IUpdateStatusBookRequestDto {
     id: number;
-    status: boolean | undefined;
+    stock: number;
     userId: number;
     bookId: number;
-    isApproved: boolean | undefined;
+    status: string;
 }
 
 export class UserDto implements IUserDto {
