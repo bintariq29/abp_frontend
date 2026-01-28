@@ -29,11 +29,19 @@
 
         <div class="form-group mb-3">
             <label class="form-label">Request Days</label>
-            <input type="number" class="form-control" name="requestDays" 
-                [(ngModel)]="request.requestDays" required #daysModel="ngModel"
-                [ngClass]="{ 'is-invalid': daysModel.touched && daysModel.invalid }"
-                min="1" placeholder="Enter number of days">
+            <input type="number" class="form-control" name="requestDays" [(ngModel)]="request.requestDays" required
+                #daysModel="ngModel" [ngClass]="{ 'is-invalid': daysModel.touched && daysModel.invalid }" min="1"
+                placeholder="Enter number of days">
             <div class="invalid-feedback">Please enter valid days (minimum 1).</div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Stock Quantity</label>
+            <input type="number" class="form-control" name="stock" [(ngModel)]="request.stock" required
+                #stockReqModel="ngModel" [ngClass]="{ 'is-invalid': stockReqModel.touched && stockReqModel.invalid }"
+                min="1" [max]="bookDetails.stock" placeholder="Enter quantity">
+            <div class="invalid-feedback">Stock quantity is required.</div>
+            <small class="text-primary">Available in Library: {{ bookDetails.stock }}</small>
         </div>
     </div>
 
