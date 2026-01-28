@@ -28,6 +28,13 @@ import { AppComponent } from './app.component';
                     },
 
                     {
+                        path: 'view-book-request',
+                        loadChildren: () => import('./requests/requests.module').then(m => m.RequestsModule),
+                        canActivate: [AppRouteGuard]
+
+                    },
+
+                    {
                         path: 'heros',
                         loadChildren: () => import('./heros/heros.module').then((m) => m.HerosModule),
                         canActivate: [AppRouteGuard],

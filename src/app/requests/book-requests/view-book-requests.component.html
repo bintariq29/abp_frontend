@@ -1,1 +1,66 @@
-<p>view-book-requests works!</p>
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="m-0 text-dark font-weight-bold">Manage Book Requests</h2>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 text-nowrap">
+                    <thead class="bg-light text-dark text-center">
+                        <tr>
+                            <th class="ps-4 text-start">Req ID</th>
+                            <th>Book ID</th>
+                            <th class="text-start">Book Name</th>
+                            <th>User Name</th>
+                            <th>Email</th>
+                            <th>Duration</th>
+                            <th>Date</th>
+                            <th class="pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        <tr *ngFor="let req of requests">
+                            <td class="ps-4 text-start"><span class="text-muted">#{{ req.id }}</span></td>
+                            <td>{{ req.bookId }}</td>
+                            <td class="text-start font-weight-bold">{{ req.bookName }}</td>
+                            <td>{{ req.userName }}</td>
+                            <td>{{ req.email }}</td>
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    {{ req.requestDays }} Days
+                                </span>
+                            </td>
+                            <td>{{ req.dateTime | date:'shortDate' }}</td>
+                            <td class="pe-4">
+                                <div class="d-flex gap-2 justify-content-center"
+                                    *ngIf="req.status === 'Pending' || req.status === null">
+                                    <button class="btn btn-sm btn-outline-primary px-3" (click)="approveRequest(req)">
+                                        Approve
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger px-3 mx-2"
+                                        (click)="rejectRequest(req)">
+                                        Reject
+                                    </button>
+                                </div>
+                                <div *ngIf="req.status !== 'Pending' && req.status !== null">
+                                    <span [ngClass]="req.status === 'Approved' ? 'text-success' : 'text-danger'"
+                                        class="small font-weight-bold">
+                                        <i class="fa"
+                                            [ngClass]="req.status === 'Approved' ? 'fa-check-circle' : 'fa-times-circle'"></i>
+                                        {{ req.status }}
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="requests.length === 0">
+                            <td colspan="8" class="text-center py-5 text-muted">No requests found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
