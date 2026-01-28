@@ -26,6 +26,7 @@ import { AppComponent } from './app.component';
                         canActivate: [AppRouteGuard]
 
                     },
+
                     {
                         path: 'heros',
                         loadChildren: () => import('./heros/heros.module').then((m) => m.HerosModule),
