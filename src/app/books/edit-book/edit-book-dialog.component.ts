@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BsModalRef, ModalModule } from 'ngx-bootstrap/modal';
 import { BookDto, BookServiceProxy } from '@shared/service-proxies/service-proxies';
+import { NotifyService } from '@node_modules/abp-ng2-module';
 
 @Component({
   selector: 'app-edit-book-dialog',
@@ -19,7 +20,8 @@ export class EditBookDialogComponent implements OnInit {
   constructor(
     public bsModalRef: BsModalRef,
     private bookService: BookServiceProxy,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private notifyService: NotifyService
 
 
   ) {
@@ -37,6 +39,7 @@ export class EditBookDialogComponent implements OnInit {
     this.saving = true;
     this.bookService.update(this.book).subscribe({
       next: () => {
+        this.notifyService.info('Book updated successfully!');
         this.bsModalRef.hide();
         this.onSave.emit();
       },
