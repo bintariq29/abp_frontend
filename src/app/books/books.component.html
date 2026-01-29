@@ -58,7 +58,7 @@
 
                                     <td *ngIf="isAdmin">
                                         <button *ngIf="item.requestDetails" class="btn btn-sm btn-info"
-                                            (click)="viewRequest(item.requestDetails)">
+                                            (click)="viewRequest()">
                                             View Request
                                         </button>
                                         <span *ngIf="!item.requestDetails" class="text-muted small">No Requests</span>

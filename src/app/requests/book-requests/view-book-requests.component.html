@@ -48,10 +48,18 @@
                                     </button>
                                 </div>
                                 <div *ngIf="req.status !== 'Pending' && req.status !== null">
-                                    <span [ngClass]="req.status === 'Approved' ? 'text-success' : 'text-danger'"
-                                        class="small font-weight-bold">
-                                        <i class="fa"
-                                            [ngClass]="req.status === 'Approved' ? 'fa-check-circle' : 'fa-times-circle'"></i>
+                                    <span [ngClass]="{
+        'text-success': req.status === 'Accepted',
+        'text-warning': req.status === 'Pending',
+        'text-danger': req.status === 'Rejected'
+      }" class="small font-weight-bold">
+
+                                        <i class="fa" [ngClass]="{
+        'fa-check-circle': req.status === 'Accepted',
+        'fa-clock': req.status === 'Pending',
+        'fa-times-circle': req.status === 'Rejected'
+      }"></i>
+
                                         {{ req.status }}
                                     </span>
                                 </div>

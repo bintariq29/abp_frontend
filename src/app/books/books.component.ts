@@ -10,7 +10,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { EditBookDialogComponent } from './edit-book/edit-book-dialog.component';
 import { AddRequestDialogComponent } from './add-request/add-request-dialog.component';
 import { EditRequestDialogComponent } from './edit-request/edit-request-dialog.component';
-import { Console } from 'console';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-books',
@@ -36,7 +36,8 @@ export class BooksComponent implements OnInit {
     private appSessionService: AppSessionService,
     private permissionService: PermissionCheckerService,
     private cdr: ChangeDetectorRef,
-    private _notify: NotifyService
+    private _notify: NotifyService,
+    private _router: Router,
 
   ) {
   }
@@ -126,6 +127,10 @@ export class BooksComponent implements OnInit {
         }
       }
     );
+  }
+
+  viewRequest(): void {
+    this._router.navigateByUrl("/app/view-book-request");
   }
 
 
