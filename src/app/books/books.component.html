@@ -39,26 +39,20 @@
                                 <tr *ngFor="let item of combineDataList">
                                     <td>{{ item.id }}</td>
                                     <td>{{ item.title }}</td>
-                                    <td>{{ item.stock }}</td>
+                                    <td>{{ item.st }}</td>
                                     <td>{{ item.price | currency }}</td>
 
                                     <td *ngIf="!isAdmin">
-                                        <span
-                                            *ngIf="item.requestDetails?.status === null && !item.requestDetails?.isApproved===null"
-                                            class="badge bg-success">
+                                        <span *ngIf="!item.requestDetails" class="badge bg-secondary">
                                             N/A
                                         </span>
 
                                         <span *ngIf="item.requestDetails" class="badge" [ngClass]="{
-            'bg-info': item.requestDetails.status === null,
-            'bg-success': item.requestDetails.status === true,
-            'bg-danger': item.requestDetails.status === false
-        }">
-
-                                            {{
-                                            item.requestDetails.status === null ? 'Pending' :
-                                            (item.requestDetails.status === true ? 'Approved' : 'Rejected')
-                                            }}
+        'bg-warning text-dark': item.requestDetails.status === 'Pending',
+        'bg-success': item.requestDetails.status === 'Accepted' || item.requestDetails.status === 'Approved',
+        'bg-danger': item.requestDetails.status === 'Rejected'
+    }">
+                                            {{ item.requestDetails.status }}
                                         </span>
                                     </td>
 
@@ -71,27 +65,31 @@
                                     </td>
 
                                     <td>
-                                        <div *ngIf="isAdmin" class="d-flex gap-3">
-                                            <button class="btn btn-sm btn-outline-primary"
-                                                (click)="editBook(item.id)">Edit Book</button>
-                                            <button class="btn btn-sm btn-outline-danger mx-2" ,
-                                                (click)="deleteBook(item)">Delete Book</button>
-                                        </div>
+                                        <div *ngIf="!isAdmin" class="d-flex flex-wrap gap-2">
 
+                                            <button *ngIf="!item.requestDetails"
+                                                class="btn btn-sm btn-outline-success mx-2" (click)="addRequest(item)">
+                                                <i class="fas fa-plus me-1"></i> Add Request
+                                            </button>
 
-                                        <div *ngIf="!isAdmin">
-                                            <button *ngIf="item.requestDetails && item.requestDetails.status !== true"
-                                                class="btn btn-sm btn-outline-primary me-1"
-                                                (click)="editRequest(item.requestDetails,item.id)">
-                                                <i class="fas fa-pencil-alt"></i> Edit Request
+                                            <button
+                                                *ngIf="item.requestDetails?.status === 'Pending' || item.requestDetails?.status === 'Rejected'"
+                                                class="btn btn-sm btn-outline-primary mx-2"
+                                                (click)="editRequest(item.requestDetails, item.id)">
+                                                <i class="fas fa-pencil-alt me-1"></i> Edit Request
                                             </button>
-                                            <button *ngIf="!item.requestDetails" class="btn btn-sm btn-success mx-2"
-                                                (click)="addRequest(item)">
-                                                Add Request
+
+                                            <button
+                                                *ngIf="item.requestDetails?.status === 'Pending' || item.requestDetails?.status === 'Rejected'"
+                                                class="btn btn-sm btn-outline-danger mx-2"
+                                                (click)="withdrawRequest(item.requestDetails.requestId, item.title, item)">
+                                                <i class="fas fa-times me-1"></i> Withdraw Request
                                             </button>
-                                            <button *ngIf="item.requestDetails" class="btn btn-sm btn-danger mx-2"
-                                                (click)="withdrawRequest(item.requestDetails.requestId,item.title,item)">
-                                                Withdraw Request
+
+                                            <button *ngIf="item.requestDetails?.status === 'Accepted'"
+                                                class="btn btn-sm btn-outline-info mx-2"
+                                                (click)="withdrawRequest(item.requestDetails.requestId, item.title, item)">
+                                                <i class="fas fa-undo me-1"></i> Return
                                             </button>
                                         </div>
                                     </td>

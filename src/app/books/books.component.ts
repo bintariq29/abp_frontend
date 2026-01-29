@@ -105,22 +105,22 @@ export class BooksComponent implements OnInit {
     });
   }
 
-  withdrawRequest(requestId: number, bookName: string, item: any): void {
+  withdrawRequest(requestId: number, bookName: string, item: any, whichFunction: string): void {
 
     abp.message.confirm(
-      `Are you sure you want to withdraw the request for "${bookName}"?`,
-      "Withdraw Confirmation",
+      `Are you sure you want to ${whichFunction} the request for "${bookName}"?`,
+      `${whichFunction} Confirmation`,
       (result: boolean) => {
         if (result) {
           this.bookRequestService.delete(requestId).subscribe({
             next: () => {
-              this._notify.success('Request withdrawn successfully');
+              this._notify.success(`${whichFunction} successfully.`);
 
 
               this.loadAllData();
             },
             error: (err) => {
-              console.error("Withdraw Error:", err);
+              console.error(`${whichFunction} Error:`, err);
             }
           });
         }
@@ -157,7 +157,8 @@ export class BooksComponent implements OnInit {
               status: relatedRequest.status,
               dateTime: relatedRequest.dateTime, // String hai to seedha aa jayegi
               requestDays: relatedRequest.requestDays,
-              email: relatedRequest.email
+              email: relatedRequest.email,
+              stock: relatedRequest.stock
             } : null
           };
         });

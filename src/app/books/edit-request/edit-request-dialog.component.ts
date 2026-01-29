@@ -39,6 +39,7 @@ export class EditRequestDialogComponent implements OnInit {
       this.request.bookId = this.requestedBookId;
       this.request.userId = this.userInfo.id;
       this.request.requestDays = actualData.requestDays;
+      this.request.stock = actualData.stock;
 
       console.log("Mapped Request Object (After Fix):", actualData);
     }

@@ -42,11 +42,11 @@ export class ViewBookRequestsComponent implements OnInit {
 
 
   approveRequest(req: any) {
-    this.processStatusUpdate(req, true, 'Approve');
+    this.processStatusUpdate(req, true, 'Accepted');
   }
 
   rejectRequest(req: any) {
-    this.processStatusUpdate(req, false, 'Reject');
+    this.processStatusUpdate(req, false, 'Rejected');
   }
 
   private processStatusUpdate(req: any, isTargetApproved: boolean, actionText: string) {
@@ -60,13 +60,18 @@ export class ViewBookRequestsComponent implements OnInit {
           input.userId = req.userId;
           input.bookId = req.bookId;
 
-          // Agar tumhare DTO mein variables boolean hain to aise assign karo:
-          // input.status = isTargetApproved;
-          // input.isApproved = isTargetApproved;
+          // Backend ab String mang raha hai, to actionText (Accepted/Rejected) assign karo
+          input.status = actionText;
 
-          this.bookRequestService.updateRequestStatus(input).subscribe(() => {
-            this.notifyService.success(`Successfully ${actionText}ed`);
-            this.loadRequests();
+          this.bookRequestService.updateRequestStatus(input).subscribe({
+            next: () => {
+              this.notifyService.success(`Successfully ${actionText}`);
+              this.loadRequests();
+            },
+            error: (err) => {
+              // Agar backend error de, to notify karo
+              this.notifyService.error(err.message || "Update failed");
+            }
           });
         }
       }
