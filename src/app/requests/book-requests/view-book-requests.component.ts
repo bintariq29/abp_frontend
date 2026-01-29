@@ -60,8 +60,9 @@ export class ViewBookRequestsComponent implements OnInit {
           input.userId = req.userId;
           input.bookId = req.bookId;
 
-          // Backend ab String mang raha hai, to actionText (Accepted/Rejected) assign karo
+
           input.status = actionText;
+          input.stock = req.stock;
 
           this.bookRequestService.updateRequestStatus(input).subscribe({
             next: () => {
@@ -69,7 +70,6 @@ export class ViewBookRequestsComponent implements OnInit {
               this.loadRequests();
             },
             error: (err) => {
-              // Agar backend error de, to notify karo
               this.notifyService.error(err.message || "Update failed");
             }
           });

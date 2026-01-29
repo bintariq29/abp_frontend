@@ -39,7 +39,7 @@
                                 <tr *ngFor="let item of combineDataList">
                                     <td>{{ item.id }}</td>
                                     <td>{{ item.title }}</td>
-                                    <td>{{ item.st }}</td>
+                                    <td>{{ item.stock }}</td>
                                     <td>{{ item.price | currency }}</td>
 
                                     <td *ngIf="!isAdmin">
@@ -82,13 +82,13 @@
                                             <button
                                                 *ngIf="item.requestDetails?.status === 'Pending' || item.requestDetails?.status === 'Rejected'"
                                                 class="btn btn-sm btn-outline-danger mx-2"
-                                                (click)="withdrawRequest(item.requestDetails.requestId, item.title, item)">
+                                                (click)="withdrawRequest(item.requestDetails.requestId, item.title, item,'Withdraw')">
                                                 <i class="fas fa-times me-1"></i> Withdraw Request
                                             </button>
 
                                             <button *ngIf="item.requestDetails?.status === 'Accepted'"
                                                 class="btn btn-sm btn-outline-info mx-2"
-                                                (click)="withdrawRequest(item.requestDetails.requestId, item.title, item)">
+                                                (click)="withdrawRequest(item.requestDetails.requestId, item.title, item, 'Return')">
                                                 <i class="fas fa-undo me-1"></i> Return
                                             </button>
                                         </div>
