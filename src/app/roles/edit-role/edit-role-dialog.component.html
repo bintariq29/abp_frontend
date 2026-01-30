@@ -41,7 +41,7 @@
                     <div class="col-md-6">
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" [id]="'permission_' + i"
-                                [checked]="isPermissionChecked(permission.name)" [disabled]="role.isStatic"
+                                [checked]="isPermissionChecked(permission.name)"
                                 (change)="onPermissionChange(permission, $event)" />
                             <label class="custom-control-label" [for]="'permission_' + i">
                                 {{ permission.displayName }}

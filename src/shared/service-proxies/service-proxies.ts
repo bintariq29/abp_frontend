@@ -2199,6 +2199,62 @@ export class TenantServiceProxy {
     }
 
     /**
+     * @param body (optional) 
+     * @return OK
+     */
+    update(body: TenantDto | undefined): Observable<TenantDto> {
+        let url_ = this.baseUrl + "/api/services/app/Tenant/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<TenantDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<TenantDto>;
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<TenantDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TenantDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
      * @param keyword (optional) 
      * @param isActive (optional) 
      * @param sorting (optional) 
@@ -2264,62 +2320,6 @@ export class TenantServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = TenantDtoPagedResultDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return OK
-     */
-    update(body: TenantDto | undefined): Observable<TenantDto> {
-        let url_ = this.baseUrl + "/api/services/app/Tenant/Update";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdate(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUpdate(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<TenantDto>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<TenantDto>;
-        }));
-    }
-
-    protected processUpdate(response: HttpResponseBase): Observable<TenantDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = TenantDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3824,6 +3824,7 @@ export class CreateTenantDto implements ICreateTenantDto {
     adminEmailAddress: string;
     connectionString: string | undefined;
     isActive: boolean;
+    featuresValues: NameValueDto[] | undefined;
 
     constructor(data?: ICreateTenantDto) {
         if (data) {
@@ -3841,6 +3842,11 @@ export class CreateTenantDto implements ICreateTenantDto {
             this.adminEmailAddress = _data["adminEmailAddress"];
             this.connectionString = _data["connectionString"];
             this.isActive = _data["isActive"];
+            if (Array.isArray(_data["featuresValues"])) {
+                this.featuresValues = [] as any;
+                for (let item of _data["featuresValues"])
+                    this.featuresValues.push(NameValueDto.fromJS(item));
+            }
         }
     }
 
@@ -3858,6 +3864,11 @@ export class CreateTenantDto implements ICreateTenantDto {
         data["adminEmailAddress"] = this.adminEmailAddress;
         data["connectionString"] = this.connectionString;
         data["isActive"] = this.isActive;
+        if (Array.isArray(this.featuresValues)) {
+            data["featuresValues"] = [];
+            for (let item of this.featuresValues)
+                data["featuresValues"].push(item.toJSON());
+        }
         return data;
     }
 
@@ -3875,6 +3886,7 @@ export interface ICreateTenantDto {
     adminEmailAddress: string;
     connectionString: string | undefined;
     isActive: boolean;
+    featuresValues: NameValueDto[] | undefined;
 }
 
 export class CreateUserDto implements ICreateUserDto {
@@ -4409,6 +4421,53 @@ export class IsTenantAvailableOutput implements IIsTenantAvailableOutput {
 export interface IIsTenantAvailableOutput {
     state: TenantAvailabilityState;
     tenantId: number | undefined;
+}
+
+export class NameValueDto implements INameValueDto {
+    name: string | undefined;
+    value: string | undefined;
+
+    constructor(data?: INameValueDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): NameValueDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new NameValueDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["value"] = this.value;
+        return data;
+    }
+
+    clone(): NameValueDto {
+        const json = this.toJSON();
+        let result = new NameValueDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface INameValueDto {
+    name: string | undefined;
+    value: string | undefined;
 }
 
 export class PermissionDto implements IPermissionDto {
@@ -5145,6 +5204,7 @@ export class TenantDto implements ITenantDto {
     tenancyName: string;
     name: string;
     isActive: boolean;
+    featuresValues: NameValueDto[] | undefined;
 
     constructor(data?: ITenantDto) {
         if (data) {
@@ -5161,6 +5221,11 @@ export class TenantDto implements ITenantDto {
             this.tenancyName = _data["tenancyName"];
             this.name = _data["name"];
             this.isActive = _data["isActive"];
+            if (Array.isArray(_data["featuresValues"])) {
+                this.featuresValues = [] as any;
+                for (let item of _data["featuresValues"])
+                    this.featuresValues.push(NameValueDto.fromJS(item));
+            }
         }
     }
 
@@ -5177,6 +5242,11 @@ export class TenantDto implements ITenantDto {
         data["tenancyName"] = this.tenancyName;
         data["name"] = this.name;
         data["isActive"] = this.isActive;
+        if (Array.isArray(this.featuresValues)) {
+            data["featuresValues"] = [];
+            for (let item of this.featuresValues)
+                data["featuresValues"].push(item.toJSON());
+        }
         return data;
     }
 
@@ -5193,6 +5263,7 @@ export interface ITenantDto {
     tenancyName: string;
     name: string;
     isActive: boolean;
+    featuresValues: NameValueDto[] | undefined;
 }
 
 export class TenantDtoPagedResultDto implements ITenantDtoPagedResultDto {

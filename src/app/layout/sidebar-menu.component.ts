@@ -6,6 +6,7 @@ import { filter } from 'rxjs/operators';
 import { MenuItem } from '@shared/layout/menu-item';
 import { NgTemplateOutlet } from '@angular/common';
 import { CollapseDirective } from 'ngx-bootstrap/collapse';
+import { FeatureCheckerService } from '@node_modules/abp-ng2-module';
 
 @Component({
     selector: 'sidebar-menu',
@@ -22,7 +23,8 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
 
     constructor(
         injector: Injector,
-        private router: Router
+        private router: Router,
+        private featureCheckerService: FeatureCheckerService,
     ) {
         super(injector);
     }
@@ -47,14 +49,21 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
             new MenuItem(this.l('Roles'), '/app/roles', 'fas fa-theater-masks', 'Pages.Roles'),
             new MenuItem(this.l('Tenants'), '/app/tenants', 'fas fa-building', 'Pages.Tenants'),
             new MenuItem(this.l('Products'), '/app/products', 'fas fa-box', 'Pages.Products'),
-            new MenuItem(this.l('Books'), '/app/books', 'fas fa-book', 'Pages.Books'),
+            new MenuItem(
+                this.l('Books'),
+                '/app/books',
+                'fas fa-book',
+                'Pages.Books', // Permission check
+                undefined,     // No sub-items
+                'Books' // <--- YE ADD KAREIN (Feature Check)
+            ),
 
             new MenuItem('Requests', '', 'fas fa-dot-circle', 'Pages.Requests', [
-                new MenuItem('Book Requests', '/app/view-book-request', 'far fa-hourglass-half', "Pages.Book Requests"),
+                new MenuItem('Book Requests', '/app/view-book-request', 'far fa-hourglass-half', "Pages.Book Requests", undefined, "Book Requests"),
 
-            ]),
+            ],),
 
-            new MenuItem(this.l('Heros'), '/app/heros', 'fas fa-user-astronaut'),
+
             new MenuItem(this.l('Users'), '/app/users', 'fas fa-users', 'Pages.Users'),
             new MenuItem(this.l('MultiLevelMenu'), '', 'fas fa-circle', '', [
                 new MenuItem('ASP.NET Boilerplate', '', 'fas fa-dot-circle', '', [
@@ -137,6 +146,9 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
     isMenuItemVisible(item: MenuItem): boolean {
         if (!item.permissionName) {
             return true;
+        }
+        if (item.featureName && !this.featureCheckerService.isEnabled(item.featureName)) {
+            return false;
         }
         return this.permission.isGranted(item.permissionName);
     }

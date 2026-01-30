@@ -7,6 +7,7 @@ import { AbpModalHeaderComponent } from '../../../shared/components/modal/abp-mo
 import { AbpValidationSummaryComponent } from '../../../shared/components/validation/abp-validation.summary.component';
 import { AbpModalFooterComponent } from '../../../shared/components/modal/abp-modal-footer.component';
 import { LocalizePipe } from '@shared/pipes/localize.pipe';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 
 @Component({
     templateUrl: 'edit-tenant-dialog.component.html',
@@ -17,6 +18,8 @@ import { LocalizePipe } from '@shared/pipes/localize.pipe';
         AbpValidationSummaryComponent,
         AbpModalFooterComponent,
         LocalizePipe,
+        TabsModule
+
     ],
 })
 export class EditTenantDialogComponent extends AppComponentBase implements OnInit {
@@ -55,5 +58,9 @@ export class EditTenantDialogComponent extends AppComponentBase implements OnIni
                 this.saving = false;
             }
         );
+    }
+
+    onFeatureChange(feature: any, event: any) {
+        feature.value = event.target.checked ? "true" : "false";
     }
 }
